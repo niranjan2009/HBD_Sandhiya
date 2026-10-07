@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glowing Love Canvas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Great+Vibes&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+body{height:100vh;width:100vw;overflow:hidden;background:linear-gradient(135deg,#1a0008 0%,#4a001e 50%,#1a0008 100%);display:flex;justify-content:center;align-items:center}
+:root{--w:min(100vw,177.7778vh);--u:calc(var(--w)/638)}
+
+/* ---------- START PAGE (your original) ---------- */
+#start{position:fixed;inset:0;z-index:20;display:flex;justify-content:center;align-items:center;background:linear-gradient(135deg,#1a0008 0%,#4a001e 50%,#1a0008 100%);transition:opacity .8s ease,filter .8s ease,transform .8s ease,visibility 0s .8s}
+#start.out{opacity:0;filter:blur(10px);transform:scale(1.05);visibility:hidden;pointer-events:none}
+#heartCanvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none}
+.content{z-index:2}
+.glass-btn{padding:15px 50px;font-size:28px;font-weight:bold;color:#ffb3c6;letter-spacing:2px;background:rgba(255,105,180,.05);border:1px solid rgba(255,192,203,.3);border-radius:50px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);cursor:pointer;transition:all .4s ease;box-shadow:0 0 20px rgba(255,20,147,.4),inset 0 0 15px rgba(255,105,180,.3);text-shadow:0 0 8px rgba(255,105,180,.8);outline:none}
+.glass-btn:hover{transform:translateY(-3px) scale(1.05);color:#fff;background:rgba(255,105,180,.15);border:1px solid rgba(255,192,203,.6);box-shadow:0 0 40px rgba(255,20,147,.8),inset 0 0 25px rgba(255,105,180,.6);text-shadow:0 0 12px #fff}
+.glass-btn:active{transform:translateY(2px) scale(.98);box-shadow:0 0 15px rgba(255,20,147,.4),inset 0 0 10px rgba(255,105,180,.3)}
+
+/* ---------- SCENE BASE ---------- */
+.sc{position:fixed;inset:0;opacity:0;visibility:hidden;overflow:hidden}
+.sc.on{opacity:1;visibility:visible}
+.st{position:absolute;left:50%;top:50%;width:var(--w);height:calc(var(--w)*.5625);transform:translate(-50%,-50%)}
+.c{position:absolute;left:50%;transform:translate(-50%,-50%);white-space:nowrap;text-align:center}
+.cg{font-family:'Cormorant Garamond',Georgia,serif}
+.fx{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+#cv{position:fixed;inset:0;width:100%;height:100%;z-index:8;pointer-events:none;transition:opacity .6s ease}
+body.gr,body.gr *{cursor:grabbing!important}
+
+/* ---------- SCENE 1 : bow & heart ---------- */
+#s1{z-index:2;background:linear-gradient(180deg,#fbf1e8 0%,#fbeee5 60%,#e8c8bd 100%);transition:opacity 1s ease .15s,visibility 0s}
+#glow1{position:absolute;left:50%;top:38%;width:50%;height:84%;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(246,140,175,.85),rgba(250,180,192,.45) 52%,transparent)}
+.e{opacity:0;transition:opacity 1s ease}
+#s1.go .e{opacity:1}
+#t1{top:15.6%;font-style:italic;font-weight:600;color:#8d5b66;letter-spacing:.03em;font-size:calc(var(--u)*15);transition-delay:.9s}
+#t2{top:89.8%;font-weight:600;color:#a2817a;letter-spacing:.2em;font-size:calc(var(--u)*8);transition-delay:1.2s}
+#heart{position:absolute;left:43.1%;top:24.3%;width:13.8%;opacity:0;transform:scale(.5);transition:opacity .8s .3s,transform 1.1s cubic-bezier(.2,1.3,.4,1) .3s;filter:drop-shadow(0 calc(var(--u)*6) calc(var(--u)*12) rgba(200,30,100,.35))}
+#s1.go #heart{opacity:1;transform:none}
+#heart svg{display:block;width:100%;animation:hb 1.9s ease-in-out infinite}
+@keyframes hb{50%{transform:scale(1.035)}}
+#bow{opacity:0;transition:opacity 1s ease .6s}
+#s1.go #bow{opacity:1}
+#hit{pointer-events:all;cursor:grab;touch-action:none}
+
+#orb{position:fixed;left:50%;top:calc(50% + var(--w)*.0506);width:calc(var(--u)*276);height:calc(var(--u)*276);border-radius:50%;background:radial-gradient(circle at 38% 30%,#f4588f,#dc2d72 40%,#b90553);z-index:9;opacity:0;transform:translate(-50%,-50%) scale(0);pointer-events:none}
+
+/* ---------- SCENE 2 : magenta ---------- */
+#s2{z-index:3;background:#c8105e}
+#s2 .bg{position:absolute;inset:0;opacity:0;transition:opacity .7s ease;background:radial-gradient(circle at 0% 22%,rgba(244,120,176,.9),transparent 36%),radial-gradient(circle at 100% 88%,rgba(232,80,150,.6),transparent 30%),radial-gradient(ellipse at 0% 100%,rgba(100,0,44,.72),transparent 58%),linear-gradient(180deg,transparent 60%,rgba(120,0,50,.25))}
+.zw{position:absolute;inset:0}
+#mw{top:17.3%;font-style:italic;font-weight:500;color:rgba(255,215,232,.9);letter-spacing:.06em;font-size:calc(var(--u)*9);opacity:0;transition:opacity .5s ease}
+#hb{position:absolute;left:50%;top:27.5%;transform:translateX(-50%);color:#fff4f4;font-family:'Abril Fatface','Playfair Display','DM Serif Display',Didot,'Bodoni MT',serif;font-size:calc(var(--u)*86);letter-spacing:-.02em;text-shadow:0 calc(var(--u)*4) calc(var(--u)*14) rgba(60,0,30,.3)}
+.ln{display:block;overflow:hidden;line-height:1.02;white-space:nowrap;text-align:center}
+.fw{display:inline-block}
+.fw i{display:inline-block;font-style:normal;transform:translateY(106%)}
+#g1,#g2{stroke-dasharray:1;stroke-dashoffset:1}
+#tg{top:84%;font-style:italic;font-weight:500;color:rgba(255,226,240,.92);letter-spacing:.05em;font-size:calc(var(--u)*8.5);opacity:0;transition:opacity .6s ease}
+#bars::before,#bars::after{content:"";position:fixed;left:0;right:0;height:var(--b,0vh);background:#10000b;z-index:11}
+#bars::before{top:0}#bars::after{bottom:0}
+
+/* ---------- SCENE 3 : tree ---------- */
+#s3{z-index:4;background:radial-gradient(ellipse 30% 42% at 56% 98%,#fffee8 0%,rgba(255,252,226,.85) 38%,transparent 74%),linear-gradient(0deg,rgba(226,172,162,.6) 0%,transparent 30%),linear-gradient(180deg,#fceee5 0%,#fce4d8 60%,#f3d2c6 100%)}
+#cm{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,#fffdf8 0%,#fff1d6 45%,#f9d9a4 100%)}
+#pn{position:absolute;left:0;top:64%;width:57%;height:32%;opacity:0;transition:opacity 1s ease;background:linear-gradient(90deg,rgba(255,255,255,.45),rgba(255,255,255,.32) 70%,transparent);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)}
+#a3,#b3{left:5.5%;transform:translateY(-50%);text-align:left;opacity:0;transition:opacity .9s ease;color:#6e4452}
+#a3{top:70.5%;font-style:italic;font-weight:600;font-size:calc(var(--u)*10);letter-spacing:.03em}
+#b3{top:88.4%;font-weight:500;color:#7b5a62;font-size:calc(var(--u)*9);letter-spacing:.02em}
+#sc{left:5.5%;top:77.8%;transform:translateY(-50%);text-align:left;font-family:'Great Vibes','Allura',cursive;color:#c4175f;font-size:calc(var(--u)*38);clip-path:inset(-30% 100% -40% -2%);text-shadow:0 0 calc(var(--u)*10) rgba(255,90,160,.55),0 calc(var(--u)*2) calc(var(--u)*8) rgba(190,20,90,.25)}
+#gl{position:fixed;left:50%;top:50%;width:100px;height:100px;border-radius:50%;z-index:9;opacity:0;transform:translate(-50%,-50%) scale(0);pointer-events:none;background:radial-gradient(circle,#fffdf6 0%,#fff2d8 38%,#fbd8a0 62%,rgba(251,216,160,0) 70%)}
+#rp{position:fixed;right:22px;bottom:18px;z-index:12;background:none;border:0;cursor:pointer;font:italic 600 15px 'Cormorant Garamond',Georgia,serif;color:#8d5b66;letter-spacing:.05em;opacity:0;visibility:hidden;transition:opacity 1s ease}
+#rp.on{opacity:.8;visibility:visible}#rp:hover{opacity:1}
+
+/* ---------- NEXT PAGE BUTTON (scene 3, bottom right) ---------- */
+#nx{position:fixed;right:22px;bottom:52px;z-index:12;padding:9px 26px;border-radius:40px;border:1px solid rgba(255,255,255,.6);cursor:pointer;font:italic 600 17px 'Cormorant Garamond',Georgia,serif;letter-spacing:.06em;color:#fff;background:linear-gradient(135deg,#f0588f,#c4175f);box-shadow:0 4px 18px rgba(196,23,95,.45);opacity:0;visibility:hidden;transform:translateY(8px);transition:opacity 1s ease,transform 1s ease,box-shadow .3s ease,visibility 0s 1s}
+#nx.on{opacity:1;visibility:visible;transform:none;transition:opacity 1s ease,transform 1s ease,box-shadow .3s ease,visibility 0s}
+#nx.on:hover{box-shadow:0 6px 26px rgba(196,23,95,.75);transform:translateY(-2px)}
+#nx.on:active{transform:scale(.97)}
+
+/* ---------- SCENE 4 : surprise / scratch card ---------- */
+#s4{z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(10px,2.4vh,24px);padding:16px;text-align:center;background:radial-gradient(ellipse at 50% 38%,#fff7ef 0%,#fce4d8 58%,#f3d2c6 100%);transition:opacity .9s ease;-webkit-user-select:none;user-select:none}
+#s4 .a{opacity:0;transform:translateY(16px);transition:opacity .9s ease,transform .9s ease}
+#s4.go .a{opacity:1;transform:none}
+#q1{font-style:italic;font-weight:600;color:#8d5b66;letter-spacing:.03em;font-size:clamp(24px,5.2vw,46px);line-height:1.15}
+#q2{font-weight:600;color:#a2817a;letter-spacing:.2em;text-transform:uppercase;font-size:clamp(11px,1.7vw,15px)}
+#card{position:relative;width:min(88vw,440px);height:min(36vh,250px);border-radius:22px;box-shadow:0 14px 40px rgba(196,23,95,.25),0 0 0 1px rgba(196,23,95,.14)}
+#under{position:absolute;inset:0;border-radius:22px;background:linear-gradient(135deg,#fffaf5,#ffe1ea);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:10px}
+#u1{font-style:italic;font-weight:600;color:#c4175f;font-size:clamp(22px,5.4vw,34px);line-height:1.1}
+#u2{font-weight:600;color:#8d5b66;letter-spacing:.03em;font-size:clamp(14px,3.4vw,19px)}
+#lk{display:inline-block;margin-top:4px;padding:11px 34px;border-radius:50px;text-decoration:none;font:600 18px 'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;letter-spacing:.08em;color:#fff;background:linear-gradient(135deg,#f0588f,#c4175f);box-shadow:0 6px 22px rgba(196,23,95,.45);opacity:0;transform:translateY(12px) scale(.96);pointer-events:none;transition:opacity .7s ease .5s,transform .7s ease .5s,box-shadow .3s ease}
+#card.open #lk{opacity:1;transform:none;pointer-events:auto}
+#card.open #lk:hover{box-shadow:0 8px 30px rgba(196,23,95,.75);transform:translateY(-2px) scale(1.04);transition:opacity .7s ease,transform .25s ease,box-shadow .3s ease}
+#scr{position:absolute;inset:0;width:100%;height:100%;border-radius:22px;touch-action:none;cursor:crosshair;transition:opacity .8s ease}
+
+/* ---------- CREDIT (bottom centre, always visible) ---------- */
+#credit{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:30;font:400 15px/1.2 'Poppins','Segoe UI',Tahoma,Geneva,Verdana,sans-serif;letter-spacing:.17em;padding-left:.17em;white-space:nowrap;color:rgba(255,255,255,.7);text-shadow:0 0 6px rgba(0,0,0,.45),0 1px 2px rgba(0,0,0,.35);pointer-events:none;user-select:none;-webkit-user-select:none}
+@media (max-height:480px){#credit{bottom:8px;font-size:11px}}
+</style>
+</head>
+<body>
+
+<!-- START PAGE -->
+<div id="start">
+  <canvas id="heartCanvas"></canvas>
+  <div class="content"><button class="glass-btn" id="go">START</button></div>
+</div>
+
+<!-- SCENE 1 -->
+<section class="sc" id="s1"><div class="st">
+  <div id="glow1"></div>
+  <p class="c cg e" id="t1">a little something, for you</p>
+  <div id="heart"><svg viewBox="0 0 100 90"><defs>
+    <linearGradient id="hg" x1="0" y1="0" x2=".25" y2="1"><stop offset="0" stop-color="#f9b4d0"/><stop offset=".35" stop-color="#f277a6"/><stop offset=".62" stop-color="#e8508f"/><stop offset=".82" stop-color="#d11d66"/><stop offset="1" stop-color="#b30543"/></linearGradient>
+    <radialGradient id="hs" cx=".32" cy=".25" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".4"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>
+    <path id="hp" d="M50 86C20 62 4 46 4 28 4 14 14 5 27 5 37 5 45 11 50 19 55 11 63 5 73 5 86 5 96 14 96 28 96 46 80 62 50 86Z" fill="url(#hg)"/>
+    <path d="M50 86C20 62 4 46 4 28 4 14 14 5 27 5 37 5 45 11 50 19 55 11 63 5 73 5 86 5 96 14 96 28 96 46 80 62 50 86Z" fill="url(#hs)"/>
+    <ellipse cx="28" cy="23" rx="10" ry="5" transform="rotate(-12 28 23)" fill="#fff" opacity=".92"/></svg></div>
+  <svg class="fx" id="bow" viewBox="0 0 638 358" preserveAspectRatio="none">
+    <path d="M152,223.5Q147.5,222 148,229L148.3,272Q148.5,278 154,278.5L196,280Q203,280 203.5,274" fill="none" stroke="#4d322a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="147.5" y="268.5" width="10.5" height="6.5" rx="1.4" transform="rotate(-14 152 272)" fill="#35201a"/>
+    <path id="str" d="" fill="none" stroke="rgba(110,90,90,.6)" stroke-width=".9"/>
+    <g id="ar">
+      <line x1="2" y1="0" x2="38" y2="0" stroke="#4b3029" stroke-width="1.7" stroke-linecap="round"/>
+      <path d="M.5,0C2,-5.5 9,-6 12.5,0 9,6 2,5.5 .5,0Z" fill="#dd2a62"/>
+      <path d="M3,0L11,-2.6M3,0L11,2.6" stroke="#b01346" stroke-width=".8"/>
+      <circle cx="40" r="4.6" fill="#fff4d8" opacity=".75"/><circle cx="40" r="2.4" fill="#e8c35c"/>
+    </g>
+    <circle id="hit" cx="172" cy="252" r="46" fill="transparent"/>
+  </svg>
+  <p class="c cg e" id="t2">PULL &amp; RELEASE</p>
+</div></section>
+
+<!-- SCENE 2 -->
+<section class="sc" id="s2"><div class="bg"></div><div class="st"><div class="zw">
+  <p class="c cg" id="mw">make a wish...</p>
+  <div id="hb"><div class="ln l1"></div><div class="ln l2"></div></div>
+  <svg class="fx" viewBox="0 0 638 358" preserveAspectRatio="none">
+    <path id="g1" pathLength="1" d="M222,267.5Q318,254 417,267" fill="none" stroke="#f5c04f" stroke-width="1.5" stroke-linecap="round"/>
+    <path id="g2" pathLength="1" d="M296,270.6L417,269.3" fill="none" stroke="#f9d67a" stroke-width="1" stroke-linecap="round"/>
+  </svg>
+  <p class="c cg" id="tg">to someone worth celebrating</p>
+</div></div></section>
+
+<!-- SCENE 3 -->
+<section class="sc" id="s3"><div class="st">
+  <div id="pn"></div>
+  <p class="c cg" id="a3">and... make it count</p>
+  <p class="c" id="sc">Happy Birthday Sandhiya</p>
+  <p class="c cg" id="b3">here's to a year that blooms</p>
+</div><div id="cm"></div></section>
+
+<!-- SCENE 4 : surprise (scratch to reveal) -->
+<section class="sc" id="s4">
+  <p class="cg a" id="q1">are you ready for the surprise?</p>
+  <p class="cg a" id="q2" style="transition-delay:.25s">scratch the card to reveal it</p>
+  <div class="a" id="card" style="transition-delay:.5s">
+    <div id="under">
+      <p class="cg" id="u1">surprise unlocked &hearts;</p>
+      <p class="cg" id="u2">Unforgettable B'Day for my dear Sandhiya!</p>
+      <!-- PASTE YOUR GITHUB LINK: replace the text  github link  inside href="" below -->
+      <a id="lk" href="https://niranjan2009.github.io/Sandhiya/" target="_blank" rel="noopener noreferrer">Open link</a>
+    </div>
+    <canvas id="scr"></canvas>
+  </div>
+</section>
+
+<canvas id="cv"></canvas>
+<div id="orb"></div><div id="gl"></div><div id="bars"></div>
+<button id="nx">next page &rarr;</button>
+<button id="rp">&#8635; replay</button>
+<div id="credit">&copy; Made by Niranjan</div>
+
+<script>
+/* ===== your original floating-hearts start canvas ===== */
+let stopHearts;
+(()=>{
+  const canvas=document.getElementById('heartCanvas'),ctx=canvas.getContext('2d');
+  let width,height,hearts=[],run=true;
+  function resizeCanvas(){width=canvas.width=window.innerWidth;height=canvas.height=window.innerHeight}
+  window.addEventListener('resize',resizeCanvas);resizeCanvas();
+  class Heart{
+    constructor(){this.x=Math.random()*width;this.y=height+Math.random()*500;this.size=Math.random()*20+10;this.speedY=Math.random()*2+1;this.speedX=(Math.random()-.5);this.opacity=Math.random()*.6+.2;
+      const h=['255, 105, 180','255, 192, 203','255, 20, 147','255, 182, 193'];this.color=`rgba(${h[Math.floor(Math.random()*h.length)]}, ${this.opacity})`}
+    update(){this.y-=this.speedY;this.x+=this.speedX;if(this.y<-50){this.y=height+50;this.x=Math.random()*width;this.speedY=Math.random()*2+1}}
+    draw(){ctx.save();ctx.translate(this.x,this.y);ctx.scale(this.size/30,this.size/30);ctx.fillStyle=this.color;ctx.beginPath();ctx.moveTo(0,10);ctx.bezierCurveTo(-15,-10,-30,10,0,30);ctx.bezierCurveTo(30,10,15,-10,0,10);ctx.fill();ctx.restore()}
+  }
+  for(let i=0,n=Math.floor(innerWidth/15);i<n;i++)hearts.push(new Heart());
+  (function animate(){if(!run)return;ctx.clearRect(0,0,width,height);hearts.forEach(h=>{h.update();h.draw()});requestAnimationFrame(animate)})();
+  stopHearts=()=>{run=false};
+})();
+
+/* ===== experience ===== */
+(()=>{
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const sleep=ms=>new Promise(r=>setTimeout(r,ms)),cl=(v,a,b)=>Math.min(b,Math.max(a,v));
+const eo=x=>1-Math.pow(1-x,3);
+const tw=(ms,fn,ez=x=>x)=>new Promise(r=>{const t0=performance.now();(function f(n){const e=cl((n-t0)/ms,0,1);fn(ez(e),e);e<1?requestAnimationFrame(f):r()})(t0)});
+const rng=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+const cv=$('#cv'),cx=cv.getContext('2d');
+let W,H,SW,SH,OX,OY,K,D,T3=0,on3=0,tree=[],bl=[],fall=[],parts=[];
+
+/* 16:9 stage fitted to window (video space = 638 x 358) */
+const FIT=[['#t1',143],['#t2',89],['#mw',70],['#hb',460,'#hb .l1 .fw'],['#tg',153],['#a3',99],['#sc',276],['#b3',120]];
+function fit(){FIT.forEach(([s,t,m])=>{const e=$(s),r=$(m||s);if(!e||!r)return;e.style.fontSize='100px';const w=r.offsetWidth;if(w)e.style.fontSize=(100*t*K/w)+'px'})}
+function size(){D=devicePixelRatio||1;W=innerWidth;H=innerHeight;SW=Math.min(W,H*16/9);SH=SW*9/16;OX=(W-SW)/2;OY=(H-SH)/2;K=SW/638;cv.width=W*D;cv.height=H*D;fit()}
+
+/* glossy heart sprites */
+const PAL=[['#ffb3d1','#f0589b','#c42a76'],['#ff9cc4','#e8408a','#b81d68'],['#ffc4da','#f77bb0','#d9468a'],['#ffd3ae','#f9965f','#e0703a'],['#ffeaa3','#f7c548','#e0a020'],['#ff8fb8','#dd2f7d','#a8135a']];
+const sp=PAL.map(p=>{const o=document.createElement('canvas');o.width=o.height=64;const x=o.getContext('2d');x.translate(32,34);x.scale(1.9,1.9);x.beginPath();x.moveTo(0,15);x.bezierCurveTo(-4,11,-16,4,-16,-5);x.bezierCurveTo(-16,-12,-6,-15,0,-8);x.bezierCurveTo(6,-15,16,-12,16,-5);x.bezierCurveTo(16,4,4,11,0,15);
+  const g=x.createRadialGradient(-6,-7,1,0,0,20);g.addColorStop(0,p[0]);g.addColorStop(.5,p[1]);g.addColorStop(1,p[2]);x.fillStyle=g;x.fill();
+  x.fillStyle='rgba(255,255,255,.75)';x.beginPath();x.ellipse(-7,-6,4.2,2.2,-.7,0,7);x.fill();return o});
+
+/* heart-shaped crown test (video px) */
+const inH=(x,y)=>{const X=(x-369)/146*1.139,Y=-1+(250-y)/247*2.26,q=X*X+Y*Y-1;return q*q*q-X*X*Y*Y*Y<=.01};
+function build(){
+  const R=rng(11);tree=[];bl=[];fall=[];
+  const B=(x,y,a,l,w,d,t)=>{
+    let x1=x+Math.sin(a)*l,y1=y-Math.cos(a)*l;
+    if(d>=3&&!inH(x1,y1)){let ok=0;for(let s=.7;s>.2;s-=.2){const px=x+Math.sin(a)*l*s,py=y-Math.cos(a)*l*s;if(inH(px,py)){x1=px;y1=py;ok=1;break}}if(!ok)return;d=9}
+    const b=(R()-.5)*l*.25;
+    tree.push({x,y,cx:(x+x1)/2+Math.cos(a)*b,cy:(y+y1)/2+Math.sin(a)*b,x1,y1,w0:w,w1:w*.72,t,du:d?160:420});
+    if(d>=8)return;
+    for(const sg of[-1,1]){const na=d?(a+sg*(.33+R()*.28))*.72+sg*.05:sg*(.55+R()*.1);B(x1,y1,na,d?l*(.75+R()*.06):70,w*.7,d+1,t+(d?82:380))}
+  };
+  B(362,382,.02,210,10,0,0);
+  let n=0;while(bl.length<380&&n++<30000){const x=369+(R()*2-1)*150,y=3+R()*247;if(!inH(x,y))continue;const q=R();bl.push({x,y,s:14+R()*11,r:(R()-.5)*.9,c:q<.18?3:q<.36?4:[0,1,2,5][R()*4|0]})}
+  bl.sort((a,b)=>b.y-a.y);bl.forEach((h,i)=>h.t=1400+i/bl.length*1000+R()*60);
+  for(let i=0;i<16;i++)fall.push({x:R()*638,y:R()*358,s:6+R()*7,v:9+R()*14,ph:R()*6.28,a:.5+R()*.4});
+}
+const BK=[[150,40,12],[192,72,14],[60,95,9],[262,22,8],[480,60,10],[565,30,9],[102,122,7],[410,18,7]];
+
+let last=performance.now();
+function loop(n){
+  const dt=Math.min(.05,(n-last)/1e3);last=n;
+  cx.setTransform(1,0,0,1,0,0);cx.clearRect(0,0,cv.width,cv.height);cx.setTransform(D*K,0,0,D*K,D*OX,D*OY);
+  if(on3){
+    const e=n-T3;
+    BK.forEach(([x,y,r],i)=>{const g=cx.createRadialGradient(x,y+Math.sin(n/2400+i)*3,0,x,y,r*1.6);g.addColorStop(0,'rgba(255,255,255,.55)');g.addColorStop(1,'rgba(255,255,255,0)');cx.fillStyle=g;cx.fillRect(x-r*2,y-r*2,r*4,r*4)});
+    if(e>500)for(const f of fall){f.y+=f.v*dt;if(f.y>370){f.y=-10;f.x=Math.random()*638}cx.save();cx.translate(f.x+Math.sin(n/1300+f.ph)*8,f.y);cx.rotate(Math.sin(n/1700+f.ph)*.6);cx.globalAlpha=f.a*cl((e-500)/800,0,1);cx.drawImage(sp[2],-f.s/2,-f.s/2,f.s,f.s);cx.restore()}
+    cx.strokeStyle='#5d3a47';cx.lineCap='round';
+    for(const s of tree){const p=cl((e-130-s.t)/s.du,0,1);if(!p)continue;const q=eo(p);cx.globalAlpha=.5+.5*q;let px=s.x,py=s.y;
+      for(let i=1;i<=8;i++){const t=q*i/8,m=1-t,X=m*m*s.x+2*m*t*s.cx+t*t*s.x1,Y=m*m*s.y+2*m*t*s.cy+t*t*s.y1;cx.lineWidth=s.w0+(s.w1-s.w0)*t;cx.beginPath();cx.moveTo(px,py);cx.lineTo(X,Y);cx.stroke();px=X;py=Y}}
+    cx.globalAlpha=1;
+    for(const h of bl){const p=cl((e-h.t)/280,0,1);if(!p)continue;const k=p<.6?p/.6*1.25:1.25-.25*(p-.6)/.4,s=h.s*k;cx.save();cx.translate(h.x,h.y);cx.rotate(h.r);cx.globalAlpha=Math.min(1,p*2);cx.drawImage(sp[h.c],-s/2,-s/2,s,s);cx.restore()}
+    cx.globalAlpha=1;
+  }
+  for(let i=parts.length;i--;){const p=parts[i];p.t+=dt;if(p.t>p.l){parts.splice(i,1);continue}
+    const k=Math.pow(.04,dt);p.vx*=k;p.vy*=k;p.x+=p.vx*dt;p.y+=p.vy*dt;cx.globalAlpha=1-Math.pow(p.t/p.l,2);
+    if(p.h){cx.save();cx.translate(p.x,p.y);cx.rotate(p.t*p.sp);cx.drawImage(sp[5],-p.s/2,-p.s/2,p.s,p.s);cx.restore()}
+    else{cx.fillStyle=p.s>3?'#f6c453':'#ffe08a';cx.beginPath();cx.arc(p.x,p.y,p.s,0,7);cx.fill()}}
+  cx.globalAlpha=1;requestAnimationFrame(loop);
+}
+
+/* ---------- SCENE 1 : pull & release ---------- */
+const N0=[174,250],DIR=[-.67,.742],ar=$('#ar'),str=$('#str'),hit=$('#hit');
+let p=0,busy=0,drag=0,sx=0,sy=0;
+const pose=q=>{const x=N0[0]+DIR[0]*q,y=N0[1]+DIR[1]*q;str.setAttribute('d',`M152,224L${x},${y}L203.5,275`);return[x,y]};
+const put=(x,y,r)=>ar.setAttribute('transform',`translate(${x} ${y}) rotate(${r})`);
+const draw=q=>{const[x,y]=pose(q);put(x,y,-41-4*q/40)};
+const pt=e=>{const r=$('#s1 .st').getBoundingClientRect();return[(e.clientX-r.left)/r.width*638,(e.clientY-r.top)/r.height*358]};
+draw(0);
+hit.onpointerdown=e=>{if(busy)return;drag=1;[sx,sy]=pt(e);hit.setPointerCapture(e.pointerId);document.body.classList.add('gr')};
+hit.onpointermove=e=>{if(!drag)return;const[x,y]=pt(e);p=cl((x-sx)*DIR[0]+(y-sy)*DIR[1],0,40);draw(p)};
+hit.onpointerup=hit.onpointercancel=async()=>{
+  if(!drag)return;drag=0;document.body.classList.remove('gr');
+  if(p>9){fire(p)}else{const q=p;await tw(220,t=>draw(q*(1-t)),eo);p=0}
+};
+
+async function fire(q){
+  if(window.primeSong)primeSong();   /* unlock audio on this tap; the song itself starts when the arrow hits */
+  busy=1;$('#t1').style.opacity=$('#t2').style.opacity=0;
+  const[x0,y0]=pose(q),tx=292,ty=144.5,h=$('#heart');
+  tw(520,(e,r)=>pose(q*Math.max(0,1-r*6)+(r>.16?Math.sin(r*36)*3.5*(1-r):0)));
+  await tw(230,e=>put(x0+(tx-x0)*e,y0+(ty-y0)*e,-41),eo);
+  if(window.startSong)startSong();   /* arrow hit the heart -> song starts */
+  for(let i=0;i<18;i++){const a=-Math.PI/2+(Math.random()-.5)*2.4,v=90+Math.random()*130;parts.push({x:322+Math.random()*8-4,y:118,vx:Math.cos(a)*v,vy:Math.sin(a)*v,t:0,l:.9+Math.random()*.5,h:i%2,s:i%2?5+Math.random()*3:2+Math.random()*2.5,sp:(Math.random()-.5)*6})}
+  h.animate([{transform:'scale(1)'},{transform:'scale(1.16)'},{transform:'scale(1)'}],{duration:380,easing:'ease-out'});
+  sleep(200).then(()=>tw(260,e=>ar.setAttribute('opacity',1-e)));
+  await sleep(420);
+  h.querySelector('svg').style.animation='none';
+  await h.animate([{transform:'translateY(0) scale(1)'},{transform:'translateY(112%) scale(.84,1.22)'}],{duration:300,easing:'cubic-bezier(.5,0,.3,1)',fill:'forwards'}).finished;
+  h.animate([{transform:'translateY(112%) scale(.84,1.22)',opacity:1},{transform:'translateY(112%) scale(1.9,.3)',opacity:0}],{duration:110,easing:'ease-in',fill:'forwards'});
+  await sleep(60);
+  const o=$('#orb');o.style.opacity=1;
+  await o.animate([{transform:'translate(-50%,-50%) scale(.04)'},{transform:'translate(-50%,-50%) scale(1)'}],{duration:340,easing:'cubic-bezier(.2,.8,.3,1)',fill:'forwards'}).finished;
+  await sleep(90);
+  const ox=W/2,oy=H/2+SH*.09,S=Math.hypot(Math.max(ox,W-ox),Math.max(oy,H-oy))*2/(276*K)*1.06;
+  await o.animate([{transform:'translate(-50%,-50%) scale(1)'},{transform:`translate(-50%,-50%) scale(${S})`}],{duration:430,easing:'cubic-bezier(.75,0,.9,.45)',fill:'forwards'}).finished;
+  scene2();
+}
+
+/* ---------- SCENE 2 : Happy Birthday Sandhiya ---------- */
+const setBars=v=>$('#bars').style.setProperty('--b',v+'vh');
+const mk=(sel,txt)=>{$(sel).innerHTML=`<span class="fw">${[...txt].map(c=>`<i>${c===' '?'&nbsp;':c}</i>`).join('')}</span>`};
+const rise=(sel,d0)=>$$(sel+' i').forEach((i,k)=>i.animate([{transform:'translateY(106%)'},{transform:'none'}],{duration:560,delay:d0+k*38,easing:'cubic-bezier(.2,.85,.25,1)',fill:'forwards'}));
+mk('.l1','Happy Birthday');mk('.l2','Sandhiya');
+async function scene2(){
+  $('#s2').classList.add('on');$('#s1').classList.remove('on');
+  $('#orb').animate([{opacity:1},{opacity:0}],{duration:320,fill:'forwards'});
+  $('#s2 .bg').style.opacity=1;
+  $('#s2 .zw').animate([{transform:'scale(1)'},{transform:'scale(1.045)'}],{duration:4400,fill:'forwards'});
+  sleep(40).then(()=>tw(270,e=>setBars(15.9*e),eo));
+  await sleep(120);$('#mw').style.opacity=1;
+  await sleep(80);rise('.l1',0);
+  await sleep(300);rise('.l2',0);
+  await sleep(280);
+  $('#g1').animate([{strokeDashoffset:1},{strokeDashoffset:0}],{duration:300,easing:'ease-in-out',fill:'forwards'});
+  $('#g2').animate([{strokeDashoffset:1},{strokeDashoffset:0}],{duration:240,delay:90,easing:'ease-in-out',fill:'forwards'});
+  await sleep(220);$('#tg').style.opacity=1;
+  await sleep(600);scene3();
+}
+
+/* ---------- SCENE 3 : blooming heart tree ---------- */
+async function scene3(){
+  const g=$('#gl'),Sx=Math.hypot(W,H)/62*1.05;
+  g.style.opacity=1;
+  g.animate([{transform:'translate(-50%,-50%) scale(.24)',offset:0},{transform:'translate(-50%,-50%) scale(.5)',offset:.25},{transform:'translate(-50%,-50%) scale(3)',offset:.5},{transform:`translate(-50%,-50%) scale(${Sx})`,offset:1}],{duration:300,fill:'forwards'});
+  sleep(90).then(()=>tw(230,e=>setBars(15.9*(1-e)),eo));
+  await sleep(300);
+  $('#s3').classList.add('on');$('#s2').classList.remove('on');
+  T3=performance.now();on3=1;
+  $('#cm').animate([{opacity:1},{opacity:0}],{duration:520,easing:'ease-out',fill:'forwards'});
+  g.animate([{opacity:1},{opacity:0}],{duration:260,fill:'forwards'});
+  sleep(500).then(()=>{$('#a3').style.opacity=1;$('#pn').style.opacity=1});
+  sleep(770).then(()=>$('#sc').animate([{clipPath:'inset(-30% 100% -40% -2%)'},{clipPath:'inset(-30% -3% -40% -2%)'}],{duration:650,easing:'cubic-bezier(.4,0,.3,1)',fill:'forwards'}));
+  sleep(1770).then(()=>$('#b3').style.opacity=1);
+  /* replay + NEXT PAGE buttons appear once the tree has bloomed */
+  sleep(4500).then(()=>{$('#rp').classList.add('on');$('#nx').classList.add('on')});
+}
+
+/* ---------- SCENE 4 : "are you ready for the surprise?" + scratch card ---------- */
+const scr=$('#scr'),sctx=scr.getContext('2d',{willReadFrequently:true});
+let s4on=0,scDone=0,scratching=0,lx=0,ly=0,lastChk=0,brush=20,fw0=0,fh0=0;
+
+/* paints the pink foil layer that the user scratches off */
+function initFoil(onlyIfResized){
+  if(scDone)return;
+  const r=scr.getBoundingClientRect(),w=r.width,h=r.height;
+  if(!w||!h)return;
+  if(onlyIfResized&&Math.abs(w-fw0)<2&&Math.abs(h-fh0)<2)return;
+  fw0=w;fh0=h;
+  const d=Math.min(D||1,2),c=sctx;
+  scr.width=Math.round(w*d);scr.height=Math.round(h*d);      /* resets canvas state */
+  c.setTransform(d,0,0,d,0,0);c.globalCompositeOperation='source-over';
+  const g=c.createLinearGradient(0,0,w,h);
+  g.addColorStop(0,'#f8c8d9');g.addColorStop(.3,'#e0709c');g.addColorStop(.55,'#f6bcd0');g.addColorStop(.8,'#d9568a');g.addColorStop(1,'#c4175f');
+  c.fillStyle=g;c.fillRect(0,0,w,h);
+  c.fillStyle='rgba(255,255,255,.15)';c.font='16px Georgia,serif';c.textAlign='center';c.textBaseline='middle';
+  for(let y=16,k=0;y<h+16;y+=30,k++)for(let x=k%2?14:29;x<w+16;x+=30)c.fillText('\u2665',x,y);
+  for(let i=0;i<320;i++){c.fillStyle='rgba(255,255,255,'+(Math.random()*.35)+')';c.fillRect(Math.random()*w,Math.random()*h,1.6,1.6)}
+  const fs=Math.min(w*.1,38);
+  c.font='italic 600 '+fs+'px "Cormorant Garamond",Georgia,serif';
+  c.shadowColor='rgba(120,0,50,.45)';c.shadowBlur=8;c.fillStyle='#fff';
+  c.fillText('scratch here',w/2,h/2);c.shadowBlur=0;
+  brush=Math.max(16,Math.min(w,h)*.1);
+}
+
+const spos=e=>{const r=scr.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]};
+function erase(x0,y0,x1,y1){
+  sctx.globalCompositeOperation='destination-out';
+  sctx.lineCap='round';sctx.lineJoin='round';sctx.lineWidth=brush*2;
+  sctx.beginPath();sctx.moveTo(x0,y0);sctx.lineTo(x1,y1);sctx.stroke();
+}
+/* how much of the foil is gone? reveal at 50% */
+function chk(force){
+  const n=performance.now();
+  if(!force&&n-lastChk<120)return;
+  lastChk=n;
+  let d;try{d=sctx.getImageData(0,0,scr.width,scr.height).data}catch(_){return}
+  let c=0,t=0;
+  for(let i=3;i<d.length;i+=24){t++;if(d[i]<128)c++}
+  if(t&&c/t>.5)reveal();
+}
+function reveal(){
+  if(scDone)return;scDone=1;scratching=0;
+  scr.style.pointerEvents='none';scr.style.opacity=0;        /* remaining foil fades away */
+  $('#card').classList.add('open');                          /* "Open link" button appears */
+  const r=scr.getBoundingClientRect(),X=(r.left+r.width/2-OX)/K,Y=(r.top+r.height/2-OY)/K;
+  for(let i=0;i<46;i++){const a=Math.random()*6.283,v=70+Math.random()*190,hh=i%2;
+    parts.push({x:X,y:Y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-30,t:0,l:1+Math.random()*.9,h:hh,s:hh?6+Math.random()*4:2+Math.random()*2.5,sp:(Math.random()-.5)*6})}
+}
+scr.onpointerdown=e=>{if(scDone)return;e.preventDefault();scratching=1;scr.setPointerCapture(e.pointerId);[lx,ly]=spos(e);erase(lx,ly,lx+.1,ly)};
+scr.onpointermove=e=>{if(!scratching||scDone)return;const[x,y]=spos(e);erase(lx,ly,x,y);lx=x;ly=y;chk()};
+scr.onpointerup=scr.onpointercancel=()=>{if(!scratching)return;scratching=0;chk(1)};
+
+async function scene4(){
+  if(s4on)return;s4on=1;
+  $('#nx').classList.remove('on');
+  $('#s4').classList.add('on');initFoil();
+  cv.style.opacity=0;                                        /* tree + sparkles fade out */
+  await sleep(650);
+  on3=0;cv.style.transition='none';cv.style.opacity=1;       /* canvas stays ready for the reveal hearts */
+  $('#s4').classList.add('go');
+  await sleep(350);
+  $('#s3').classList.remove('on');
+  initFoil(1);
+}
+$('#nx').onclick=scene4;
+addEventListener('resize',()=>{if(s4on&&!scDone)initFoil(1)});
+
+/* ---------- boot ---------- */
+function begin(instant){
+  $('#start').classList.add('out');if(instant)$('#start').style.transition='none';
+  setTimeout(stopHearts,900);
+  $('#s1').classList.add('on');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>$('#s1').classList.add('go')));
+}
+$('#go').onclick=()=>begin(0);
+$('#rp').onclick=()=>{location.hash='r';location.reload()};
+size();build();addEventListener('resize',size);
+if(document.fonts)document.fonts.ready.then(fit);addEventListener('load',fit);
+requestAnimationFrame(loop);
+if(location.hash==='#r'){history.replaceState(null,'',location.pathname+location.search);begin(1)}
+})();
+</script>
+
+<!-- BACKGROUND SONG : keep your mp3 at  assest/music.mp3  (folder "assest" sits next to this index.html)
+     The song starts the moment the arrow hits the heart (not on START). -->
+<audio id="bgm" src="assest/music.mp3" preload="auto" loop></audio>
+<script>
+(()=>{
+  const bgm=document.getElementById('bgm');
+  if(!bgm)return;
+  const EV=['pointerdown','pointerup','touchend','keydown','click'];
+  let started=false,primed=false;
+  const off=()=>EV.forEach(e=>document.removeEventListener(e,retry,true));
+  function retry(){
+    const p=bgm.play();
+    if(p&&p.then)p.then(off).catch(()=>{});   /* still blocked? stay armed and retry on the next tap/click */
+    else off();
+  }
+  bgm.addEventListener('error',()=>{console.warn('Background song not found: assest/music.mp3');off()});
+
+  /* arrow released (a real tap/click): silently unlock audio so phones allow playback a moment later */
+  window.primeSong=()=>{
+    if(started||primed)return;primed=true;
+    bgm.muted=true;
+    const p=bgm.play();
+    if(p&&p.then)p.then(()=>{if(!started){bgm.pause();bgm.currentTime=0}}).catch(()=>{});
+  };
+
+  /* arrow hits the heart: play the song */
+  window.startSong=()=>{
+    if(started)return;started=true;
+    bgm.muted=false;
+    const p=bgm.play();
+    if(p&&p.catch)p.catch(()=>EV.forEach(e=>document.addEventListener(e,retry,true)));
+  };
+})();
+</script>
+<script src="love-plus.js"></script>
+</body>
+</html>
