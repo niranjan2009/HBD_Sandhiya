@@ -20,9 +20,7 @@ const CFG={
   hint:'press & hold to blow out the candles',
   done:'your wish is safe with me ♥',
   wishes:[
-    'may this year be as gentle with you as you are with everyone',
-    'may every little wish you whisper come true out loud',
-    'and may I be right there to watch every single one happen ♥'
+   'Inniya Porandhanaal Nal Vaalthukal Sandhiya♥'
   ],
   button:'open your surprise ♥',
   taps:['you + me','my favourite person','forever yours','my happy place','still falling for you','you are my home','my sunshine','smile for me ♥'],
@@ -103,6 +101,16 @@ if(bgm){
   bgm.addEventListener('error',()=>mu.classList.remove('on'));
   bgm.addEventListener('volumechange',()=>mu.classList.toggle('off',bgm.muted));
   mu.onclick=()=>{bgm.muted=!bgm.muted};
+}
+   /* ============ STOP THE MUSIC WHEN THE SURPRISE LINK IS OPENED ============ */
+const lkBtn=$('#lk');
+if(lkBtn&&bgm){
+  const stopMusic=()=>{
+    bgm.pause();bgm.removeAttribute('src');bgm.load();   /* stops it for good */
+    const m=$('#mu');if(m)m.classList.remove('on');      /* hide the music button too */
+  };
+  lkBtn.addEventListener('click',stopMusic);
+  lkBtn.addEventListener('auxclick',stopMusic);
 }
 
 /* ============ TAP ANYWHERE: hearts + a little love note ============ */
